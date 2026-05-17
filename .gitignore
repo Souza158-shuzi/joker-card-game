@@ -8,13 +8,20 @@ Thumbs.db
 # 环境变量
 .env
 .env.*
+!.env.example
 
 # 构建产物
 build/
 dist/
+
+# Liblib 出图产物
+liblib/output/
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Claude Code 本地配置
+.claude/

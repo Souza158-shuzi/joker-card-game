@@ -12,7 +12,23 @@ PRD.html        # 产品需求文档（只读，参考用）
 DESIGN.html     # 设计规范文档（只读，参考用）
 agents/         # Claude Code 自定义 Agent 定义
 slash/          # Claude Code 自定义斜杠命令
+liblib/         # LiblibAI 出图产物（output/ 被 git ignore）
 ```
+
+## 美术资产生成
+
+本项目卡牌美术通过全局 **card-art skill** 生成（基于 LiblibAI Flux + 卡牌风 LoRA）：
+
+```bash
+# 扑克牌面
+node ~/.claude/skills/card-art/scripts/generate.js --preset playing-card --prompt "Ace of Spades, ..."
+# Joker 角色立绘
+node ~/.claude/skills/card-art/scripts/generate.js --preset character-card --prompt "mystical jester, ..."
+```
+
+或直接对 Claude 说「画一张红心 Q」「生成一张 Joker 角色卡」即可。出图落到 `liblib/output/`。
+
+密钥放在 `~/.claude/.env`（全局），不入库。
 
 ## 技术栈
 

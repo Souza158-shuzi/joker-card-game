@@ -19,6 +19,27 @@
   --radius-card:    12px;
   --radius-btn:     999px;
   --ease-card:      200ms ease;
+
+  /* ── V1.2.0 新增 Tokens ── */
+  --color-joker-bg:          #1e1433;
+  --color-joker-border:      #6b3fa0;
+  --color-joker-text:        #e8d5ff;
+  --color-joker-price:       #f5c842;
+  --color-joker-flash:       #f5c842;
+  --color-type-unconditional:#7c6bdb;
+  --color-type-hand:         #e8952a;
+  --color-type-suit-diamond: #e06060;
+  --color-type-suit-heart:   #d33f3f;
+  --color-type-suit-spade:   #5a8fcf;
+  --color-type-suit-club:    #4caa6e;
+  --color-type-count:        #9b3535;
+  --color-coin:              #f5c842;
+  --color-slot-empty:        rgba(255,255,255,0.15);
+  --color-slot-empty-text:   rgba(255,255,255,0.30);
+  --color-shop-bg:           #12101a;
+  --color-shop-header:       #1e1b2e;
+  --color-shop-divider:      rgba(255,255,255,0.08);
+  --color-float-mult:        #f5c842;
 }
 
 html, body {
@@ -33,10 +54,10 @@ html, body {
   justify-content: center;
 }
 
-/* ── 外层缩放容器 ── */
+/* ── 外层缩放容器（高度扩展到 720px）── */
 #scale-root {
   width: 1080px;
-  height: 640px;
+  height: 720px;
   transform-origin: center center;
   flex-shrink: 0;
 }
@@ -44,7 +65,7 @@ html, body {
 /* ── 游戏主视口 ── */
 .game-viewport {
   width: 1080px;
-  height: 640px;
+  height: 720px;
   background: var(--color-table);
   background-image:
     radial-gradient(ellipse at 50% 100%, rgba(0,0,0,.25) 0%, transparent 70%),
@@ -55,12 +76,38 @@ html, body {
   position: relative;
 }
 
-/* ── HUD 顶栏 ── */
-.hud {
+/* ── HUD 行1：关卡 + 金币 ── */
+.hud-row1 {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 24px;
-  height: 64px;
+  height: 28px;
+  background: rgba(0,0,0,0.5);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.hud-level {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.5px;
+}
+.hud-coins {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-coin);
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+}
+.hud-coins::before { content: '$ '; font-size: 12px; opacity: 0.8; }
+
+/* ── HUD 行2：原 4 列（高度从 64px 缩至 56px）── */
+.hud-row2 {
+  display: flex;
+  align-items: center;
+  height: 56px;
   background: rgba(0,0,0,.35);
   backdrop-filter: blur(4px);
   border-bottom: 1px solid rgba(255,255,255,.08);
@@ -94,6 +141,145 @@ html, body {
 .hud-value.score    { color: var(--color-score); }
 .hud-value.plays    { color: var(--color-accent); }
 .hud-value.discards { color: #e06060; }
+
+/* ── Joker 槽位区 ── */
+.joker-zone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  height: 130px;
+  background: rgba(0,0,0,0.20);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 0 24px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 50;
+}
+
+/* 空槽位 */
+.joker-slot {
+  width: 76px;
+  height: 110px;
+  border-radius: 12px;
+  border: 2px dashed rgba(255,255,255,0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: rgba(255,255,255,0.30);
+  position: relative;
+  flex-shrink: 0;
+}
+.slot-plus  { font-size: 22px; line-height: 1; }
+.slot-label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; }
+
+/* 已装备的 Joker 卡片（槽位版 76×110px）*/
+.joker-card {
+  width: 76px;
+  height: 110px;
+  border-radius: 12px;
+  background: var(--color-joker-bg);
+  border: 1.5px solid var(--color-joker-border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.joker-stripe {
+  height: 4px;
+  width: 100%;
+  flex-shrink: 0;
+}
+.joker-body {
+  padding: 6px 8px 6px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+  overflow: hidden;
+}
+.joker-name {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-joker-text);
+  line-height: 1.2;
+}
+.joker-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+}
+.joker-desc {
+  font-size: 9px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.4;
+}
+
+/* ── Joker 插画版（槽位 76x110） ── */
+.joker-card.has-art {
+  position: relative;
+}
+.joker-card.has-art .joker-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.joker-card.has-art .joker-stripe {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 2;
+}
+.joker-card.has-art .joker-label {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 3px 6px 4px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));
+  z-index: 2;
+  line-height: 1.2;
+  letter-spacing: 0.3px;
+}
+
+/* 触发闪烁动画 */
+@keyframes joker-flash {
+  0%   { border-color: var(--color-joker-border); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+  50%  { border-color: var(--color-joker-flash);  box-shadow: 0 0 0 2.5px #f5c842, 0 0 16px rgba(245,200,66,0.6); }
+  100% { border-color: var(--color-joker-border); box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
+}
+.joker--triggered {
+  animation: joker-flash 0.4s ease 2;
+}
+
+/* 浮字动画 */
+@keyframes float-up-fade {
+  0%   { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-24px); }
+}
+.float-text {
+  position: absolute;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-float-mult);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  pointer-events: none;
+  white-space: nowrap;
+  animation: float-up-fade 0.8s ease-out forwards;
+  z-index: 150;
+}
 
 /* ── 出牌区 ── */
 .play-zone {
@@ -149,7 +335,7 @@ html, body {
 
 /* ── 手牌区 ── */
 .hand-zone {
-  padding: 16px 24px 12px;
+  padding: 12px 24px 10px;
   background: rgba(0,0,0,.2);
   border-top: 1px solid rgba(255,255,255,.06);
   flex-shrink: 0;
@@ -159,7 +345,44 @@ html, body {
   color: rgba(255,255,255,.4);
   letter-spacing: 1px;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ── 排序切换按钮（V1.2.1）── */
+.sort-btns {
+  display: flex;
+  gap: 6px;
+}
+.sort-btn {
+  width: 48px;
+  height: 22px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+  padding: 0;
+  line-height: 1;
+  letter-spacing: 0.3px;
+}
+.sort-btn-active {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
+.sort-btn-inactive {
+  background: transparent;
+  color: rgba(255,255,255,0.45);
+  border-color: rgba(255,255,255,0.25);
+}
+.sort-btn-inactive:hover {
+  border-color: rgba(255,255,255,0.65);
+  color: rgba(255,255,255,0.8);
 }
 .hand-cards {
   display: flex;
@@ -173,7 +396,7 @@ html, body {
   align-items: center;
   gap: 12px;
   justify-content: center;
-  padding: 14px 24px;
+  padding: 12px 24px;
   background: rgba(0,0,0,.3);
   border-top: 1px solid rgba(255,255,255,.06);
   flex-shrink: 0;
@@ -259,6 +482,35 @@ html, body {
 .red-card .corner, .red-card .center-suit { color: var(--color-card-red); }
 .black-card .corner, .black-card .center-suit { color: #1a1a1a; }
 
+/* ── 卡牌插画底图 ── */
+.poker-card.has-art {
+  overflow: hidden;
+}
+.card-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-card);
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+/* 有插画时角落文字加白底胶囊，保证可读 */
+.poker-card.has-art .corner {
+  background: rgba(255,255,255,0.92);
+  border-radius: 6px;
+  padding: 2px 4px;
+  line-height: 1;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+.poker-card.has-art .corner.tl { top: 4px; left: 4px; }
+.poker-card.has-art .corner.br { bottom: 4px; right: 4px; }
+.poker-card.has-art .corner .rank { font-size: 12px; }
+.poker-card.has-art .corner .suit { font-size: 10px; }
+
 /* ── 弹窗 ── */
 .modal-overlay {
   position: absolute;
@@ -267,41 +519,52 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 100;
   backdrop-filter: blur(3px);
 }
 .modal-overlay.hidden { display: none; }
+.hidden { display: none !important; }
 .modal-box {
   background: #0d0d0d;
   border-radius: 16px;
-  padding: 40px 48px;
+  padding: 36px 48px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  min-width: 320px;
+  max-width: 440px;
 }
-.modal-box.win  { border: 2px solid var(--color-gold); }
-.modal-box.lose { border: 2px solid var(--color-discard); }
+.modal-box.win       { border: 2px solid var(--color-gold); }
+.modal-box.all-clear { border: 2px solid #f5c842; }
+.modal-box.lose      { border: 2px solid var(--color-discard); }
 .modal-title {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
 }
-.modal-box.win  .modal-title { color: var(--color-gold); }
-.modal-box.lose .modal-title { color: #e06060; }
+.modal-box.win       .modal-title { color: var(--color-gold); }
+.modal-box.all-clear .modal-title { color: #f5c842; }
+.modal-box.lose      .modal-title { color: #e06060; }
 .modal-body {
-  font-size: 15px;
+  font-size: 14px;
   color: rgba(255,255,255,.7);
 }
 .modal-score {
   font-family: 'JetBrains Mono', monospace;
   font-size: 40px;
   font-weight: 700;
-  color: #fff;
+  color: var(--color-score);
   font-variant-numeric: tabular-nums;
 }
+.modal-coins {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-coin);
+}
 
-/* ── 出牌得分 Toast ── */
+/* ── 得分 Toast ── */
 .score-toast {
   position: absolute;
   top: 12px;
@@ -319,6 +582,287 @@ html, body {
   opacity: 1;
   transform: translateY(-8px);
 }
+
+/* ── 商店弹窗（position:absolute 在 game-viewport 内，跟随 scale）── */
+.shop-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shop-overlay.hidden { display: none; }
+
+.shop-modal {
+  width: 720px;
+  background: var(--color-shop-bg);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 商店 header */
+.shop-header {
+  padding: 0 28px;
+  height: 60px;
+  background: var(--color-shop-header);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-shop-divider);
+  flex-shrink: 0;
+}
+.shop-header-left { display: flex; flex-direction: column; gap: 2px; }
+.shop-title   { font-size: 18px; font-weight: 700; color: #fff; }
+.shop-subtitle { font-size: 12px; color: rgba(255,255,255,0.5); }
+.shop-coins {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-coin);
+  font-variant-numeric: tabular-nums;
+}
+.shop-coins::before { content: '$ '; font-size: 14px; opacity: 0.8; }
+
+/* 商店商品区 */
+.shop-items {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px;
+  position: relative;
+}
+
+/* 商店版 Joker 卡（140×260px，含插画）*/
+.shop-joker-card {
+  width: 140px;
+  height: 260px;
+  border-radius: 12px;
+  background: var(--color-joker-bg);
+  border: 1.5px solid var(--color-joker-border);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  flex-shrink: 0;
+  position: relative;
+}
+.shop-joker-art {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  flex-shrink: 0;
+  user-select: none;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+.shop-joker-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(107,63,160,0.5);
+  border-color: #a070e0;
+}
+.shop-joker-body {
+  padding: 10px 12px 8px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 6px;
+}
+.shop-joker-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-joker-text);
+}
+.shop-joker-divider { height: 1px; background: rgba(255,255,255,0.15); }
+.shop-joker-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.5;
+  flex: 1;
+}
+.shop-joker-price {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-joker-price);
+}
+.shop-joker-price::before { content: '$ '; font-size: 12px; opacity: 0.8; }
+.btn-buy {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  border: none;
+  border-radius: 8px;
+  height: 32px;
+  cursor: pointer;
+  transition: opacity 150ms ease, transform 150ms ease;
+  width: 100%;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.btn-buy:hover:not(:disabled):not(.purchased) { opacity: 0.88; transform: translateY(-1px); }
+.btn-buy.insufficient {
+  background: rgba(168,50,50,0.5);
+  color: rgba(255,255,255,0.5);
+  cursor: not-allowed;
+}
+.btn-buy.slots-full {
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.3);
+  cursor: not-allowed;
+}
+.btn-buy.purchased {
+  background: rgba(93,214,122,0.25);
+  color: #5dd67a;
+  cursor: default;
+}
+
+/* 商店 Toast 提示 */
+.shop-toast {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(168,50,50,0.85);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 18px;
+  border-radius: 999px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 300ms;
+  pointer-events: none;
+  z-index: 210;
+}
+.shop-toast.show { opacity: 1; }
+
+/* 商店 footer */
+.shop-footer {
+  height: 90px;
+  background: var(--color-shop-header);
+  border-top: 1px solid var(--color-shop-divider);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  flex-shrink: 0;
+}
+.shop-footer-slots {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.shop-footer-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+
+/* 商店底部迷你 Joker 卡（60×76px）*/
+.mini-joker-card {
+  width: 60px;
+  height: 76px;
+  border-radius: 8px;
+  background: var(--color-joker-bg);
+  border: 1.5px solid var(--color-joker-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.mini-joker-stripe { height: 3px; width: 100%; flex-shrink: 0; }
+.mini-joker-body { padding: 4px 6px; flex: 1; }
+.mini-joker-name { font-size: 9px; font-weight: 700; color: var(--color-joker-text); line-height: 1.3; }
+
+/* mini-joker 插画版 */
+.mini-joker-card.has-art { position: relative; }
+.mini-joker-card.has-art .mini-joker-art {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  user-select: none; pointer-events: none; -webkit-user-drag: none;
+}
+.mini-joker-card.has-art .mini-joker-stripe { position: absolute; top: 0; left: 0; right: 0; z-index: 2; }
+.mini-joker-card.has-art .mini-joker-label {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 2px 4px 3px;
+  font-size: 8px; font-weight: 700; color: #fff;
+  text-align: center; line-height: 1.2;
+  background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));
+  z-index: 2;
+}
+.mini-slot-empty {
+  width: 60px;
+  height: 76px;
+  border-radius: 8px;
+  border: 1.5px dashed rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.25);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.btn-continue {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 999px;
+  padding: 10px 26px;
+  border: none;
+  cursor: pointer;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  box-shadow: 0 4px 14px rgba(232,104,42,0.45);
+  font-family: 'Noto Sans SC', sans-serif;
+}
+.btn-continue:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(232,104,42,0.6);
+}
+
+/* Joker stripe 颜色（按 data-joker-id）*/
+[data-joker-id="joker"]   .joker-stripe,
+[data-joker-id="joker"]   .mini-joker-stripe,
+[data-joker-id="joker"]   .shop-stripe { background: #7c6bdb; }
+
+[data-joker-id="jolly"]   .joker-stripe,
+[data-joker-id="jolly"]   .mini-joker-stripe,
+[data-joker-id="jolly"]   .shop-stripe { background: #e8952a; }
+
+[data-joker-id="zany"]    .joker-stripe,
+[data-joker-id="zany"]    .mini-joker-stripe,
+[data-joker-id="zany"]    .shop-stripe { background: #d4750a; }
+
+[data-joker-id="greedy"]  .joker-stripe,
+[data-joker-id="greedy"]  .mini-joker-stripe,
+[data-joker-id="greedy"]  .shop-stripe { background: #e06060; }
+
+[data-joker-id="lusty"]   .joker-stripe,
+[data-joker-id="lusty"]   .mini-joker-stripe,
+[data-joker-id="lusty"]   .shop-stripe { background: #d33f3f; }
+
+[data-joker-id="wrathful"].joker-stripe,
+[data-joker-id="wrathful"].mini-joker-stripe,
+[data-joker-id="wrathful"].shop-stripe { background: #5a8fcf; }
+
+[data-joker-id="crafty"]  .joker-stripe,
+[data-joker-id="crafty"]  .mini-joker-stripe,
+[data-joker-id="crafty"]  .shop-stripe { background: #4caa6e; }
+
+[data-joker-id="half"]    .joker-stripe,
+[data-joker-id="half"]    .mini-joker-stripe,
+[data-joker-id="half"]    .shop-stripe { background: #9b3535; }
 </style>
 </head>
 <body>
@@ -326,11 +870,17 @@ html, body {
 <div id="scale-root">
 <div class="game-viewport">
 
-  <!-- HUD 顶栏 -->
-  <div class="hud">
+  <!-- HUD 行1：关卡 + 金币 -->
+  <div class="hud-row1">
+    <div class="hud-level" id="hud-level">第 1 关 / 共 3 关 · 目标 300 分</div>
+    <div class="hud-coins" id="hud-coins">4</div>
+  </div>
+
+  <!-- HUD 行2：原 4 列 -->
+  <div class="hud-row2">
     <div class="hud-item">
       <div class="hud-label">目标分</div>
-      <div class="hud-value target">300</div>
+      <div class="hud-value target" id="hud-target">300</div>
     </div>
     <div class="hud-item">
       <div class="hud-label">当前分</div>
@@ -346,6 +896,9 @@ html, body {
     </div>
   </div>
 
+  <!-- Joker 槽位区 -->
+  <div class="joker-zone" id="joker-zone"></div>
+
   <!-- 出牌区 -->
   <div class="play-zone">
     <div class="hand-type-badge neutral" id="hand-type-badge">请选 1–5 张牌</div>
@@ -356,7 +909,13 @@ html, body {
 
   <!-- 手牌区 -->
   <div class="hand-zone">
-    <div class="hand-zone-label">手牌 · <span id="hand-count">8</span> 张</div>
+    <div class="hand-zone-label">
+      <span>手牌 · <span id="hand-count">8</span> 张</span>
+      <div class="sort-btns">
+        <button id="btn-sort-rank" class="sort-btn sort-btn-active">点数</button>
+        <button id="btn-sort-suit" class="sort-btn sort-btn-inactive">花色</button>
+      </div>
+    </div>
     <div class="hand-cards" id="hand-cards"></div>
   </div>
 
@@ -367,13 +926,39 @@ html, body {
     <button class="btn btn-restart" id="btn-restart">重新开始</button>
   </div>
 
-  <!-- 弹窗 -->
+  <!-- 过关/通关/失败弹窗 -->
   <div class="modal-overlay hidden" id="modal">
     <div class="modal-box" id="modal-box">
       <div class="modal-title" id="modal-title"></div>
       <div class="modal-score" id="modal-score"></div>
+      <div class="modal-coins hidden" id="modal-coins"></div>
       <div class="modal-body"  id="modal-body"></div>
-      <button class="btn btn-play" id="btn-modal-restart" style="margin-top:8px">重新开始</button>
+      <button class="btn btn-play" id="btn-modal-action" style="margin-top:8px">进入商店</button>
+    </div>
+  </div>
+
+  <!-- 商店弹窗 -->
+  <div class="shop-overlay hidden" id="shop-overlay">
+    <div class="shop-modal">
+      <div class="shop-header">
+        <div class="shop-header-left">
+          <div class="shop-title">商店</div>
+          <div class="shop-subtitle" id="shop-subtitle">第 1 关已通过！选购 Joker 强化牌组</div>
+        </div>
+        <div class="shop-coins" id="shop-coins">4</div>
+      </div>
+
+      <div class="shop-items" id="shop-items">
+        <div class="shop-toast" id="shop-toast"></div>
+      </div>
+
+      <div class="shop-footer">
+        <div class="shop-footer-slots">
+          <span class="shop-footer-label">Joker 槽位：</span>
+          <div id="shop-footer-slots"></div>
+        </div>
+        <button class="btn-continue" id="btn-continue">继续下一关 →</button>
+      </div>
     </div>
   </div>
 
@@ -397,53 +982,186 @@ const HAND_RANKS = [
   { name: '高牌',       base: 5,   mult: 1 },
 ];
 
+// 仅用于计分（A=11，K/Q/J/10=10，2-9 按面值）
 const RANK_VALUE = { A:11, K:10, Q:10, J:10, '10':10, '9':9, '8':8, '7':7, '6':6, '5':5, '4':4, '3':3, '2':2 };
 
+// 用于判断顺子连续性（A=14，K=13…2=2）
+const RANK_ORDER = { A:14, K:13, Q:12, J:11, '10':10, '9':9, '8':8, '7':7, '6':6, '5':5, '4':4, '3':3, '2':2 };
+
 // ─────────────────────────────────────────────
-// 牌型识别
+// 手牌排序（V1.2.1）
+// 返回副本，不修改 state.hand 原数组，确保 state.selected 引用不断裂
+// ─────────────────────────────────────────────
+const SUIT_ORDER = { '♠': 4, '♥': 3, '♦': 2, '♣': 1 };
+
+function sortHand(hand, mode) {
+  return [...hand].sort((a, b) => {
+    if (mode === 'suit') {
+      // 主键：花色降序（♠ > ♥ > ♦ > ♣）；次键：点数降序
+      if (SUIT_ORDER[a.suit] !== SUIT_ORDER[b.suit]) return SUIT_ORDER[b.suit] - SUIT_ORDER[a.suit];
+      return RANK_ORDER[b.rank] - RANK_ORDER[a.rank];
+    } else {
+      // 默认 'rank'：主键点数降序；次键花色降序
+      if (RANK_ORDER[a.rank] !== RANK_ORDER[b.rank]) return RANK_ORDER[b.rank] - RANK_ORDER[a.rank];
+      return SUIT_ORDER[b.suit] - SUIT_ORDER[a.suit];
+    }
+  });
+}
+
+// ─────────────────────────────────────────────
+// 8 张 Joker 数据库
+// ─────────────────────────────────────────────
+const JOKER_DB = [
+  {
+    id: 'joker', name: '小丑', price: 4,
+    type: 'unconditional',
+    desc: '每次出牌\n+4 倍率',
+    // apply 返回更新后的 mult（所有 Joker 都只加 mult，不乘）
+    apply(ctx) {
+      return { mult: ctx.mult + 4, triggered: true, bonus: 4 };
+    }
+  },
+  {
+    id: 'jolly', name: '欢乐小丑', price: 4,
+    type: 'hand_type',
+    desc: '出牌含对子时\n+8 倍率',
+    apply(ctx) {
+      const paired = ['对子','两对','葫芦','四条'];
+      if (paired.includes(ctx.handType)) {
+        return { mult: ctx.mult + 8, triggered: true, bonus: 8 };
+      }
+      return { mult: ctx.mult, triggered: false, bonus: 0 };
+    }
+  },
+  {
+    id: 'zany', name: '狂热小丑', price: 5,
+    type: 'hand_type',
+    desc: '出牌含三条时\n+12 倍率',
+    apply(ctx) {
+      const tripled = ['三条','葫芦','四条'];
+      if (tripled.includes(ctx.handType)) {
+        return { mult: ctx.mult + 12, triggered: true, bonus: 12 };
+      }
+      return { mult: ctx.mult, triggered: false, bonus: 0 };
+    }
+  },
+  {
+    id: 'greedy', name: '贪婪小丑', price: 5,
+    type: 'suit',
+    desc: '每张方块牌\n+4 倍率',
+    apply(ctx) {
+      const n = ctx.cards.filter(c => c.suit === '♦').length;
+      if (n > 0) return { mult: ctx.mult + n * 4, triggered: true, bonus: n * 4 };
+      return { mult: ctx.mult, triggered: false, bonus: 0 };
+    }
+  },
+  {
+    id: 'lusty', name: '色欲小丑', price: 5,
+    type: 'suit',
+    desc: '每张红心牌\n+4 倍率',
+    apply(ctx) {
+      const n = ctx.cards.filter(c => c.suit === '♥').length;
+      if (n > 0) return { mult: ctx.mult + n * 4, triggered: true, bonus: n * 4 };
+      return { mult: ctx.mult, triggered: false, bonus: 0 };
+    }
+  },
+  {
+    id: 'wrathful', name: '暴怒小丑', price: 5,
+    type: 'suit',
+    desc: '每张黑桃牌\n+4 倍率',
+    apply(ctx) {
+      const n = ctx.cards.filter(c => c.suit === '♠').length;
+      if (n > 0) return { mult: ctx.mult + n * 4, triggered: true, bonus: n * 4 };
+      return { mult: ctx.mult, triggered: false, bonus: 0 };
+    }
+  },
+  {
+    id: 'crafty', name: '卑鄙小丑', price: 5,
+    type: 'suit',
+    desc: '每张梅花牌\n+4 倍率',
+    apply(ctx) {
+      const n = ctx.cards.filter(c => c.suit === '♣').length;
+      if (n > 0) return { mult: ctx.mult + n * 4, triggered: true, bonus: n * 4 };
+      return { mult: ctx.mult, triggered: false, bonus: 0 };
+    }
+  },
+  {
+    id: 'half', name: '半个小丑', price: 6,
+    type: 'count',
+    desc: '出牌 ≤3 张时\n+20 倍率',
+    apply(ctx) {
+      if (ctx.cards.length <= 3) {
+        return { mult: ctx.mult + 20, triggered: true, bonus: 20 };
+      }
+      return { mult: ctx.mult, triggered: false, bonus: 0 };
+    }
+  },
+];
+
+// ─────────────────────────────────────────────
+// 牌型识别（V1.2.0：用 RANK_ORDER 判断顺子连续性）
 // ─────────────────────────────────────────────
 function detectHand(cards) {
   if (cards.length === 0) return null;
 
-  const ranks = cards.map(c => c.rank);
   const suits = cards.map(c => c.suit);
-  const values = cards.map(c => c.value).sort((a,b) => b - a);
+  const rankNums = cards.map(c => RANK_ORDER[c.rank]).sort((a, b) => a - b);
 
   const rankCounts = {};
-  ranks.forEach(r => rankCounts[r] = (rankCounts[r] || 0) + 1);
-  const counts = Object.values(rankCounts).sort((a,b) => b - a);
+  cards.forEach(c => rankCounts[c.rank] = (rankCounts[c.rank] || 0) + 1);
+  const counts = Object.values(rankCounts).sort((a, b) => b - a);
 
-  const isFlush  = cards.length === 5 && suits.every(s => s === suits[0]);
+  const isFlush = cards.length === 5 && suits.every(s => s === suits[0]);
+
   const isStraight = (() => {
     if (cards.length !== 5) return false;
-    const sorted = [...new Set(values)].sort((a,b) => a - b);
-    if (sorted.length !== 5) return false;
-    // 普通顺子
-    if (sorted[4] - sorted[0] === 4) return true;
-    // A-2-3-4-5 低顺（A 当 1 用）
-    if (sorted.join(',') === '2,3,4,5,11') return true;
+    // 用 RANK_ORDER 序号，先去重（防止同牌多张），再判断是否连续
+    const uniq = [...new Set(rankNums)].sort((a, b) => a - b);
+    if (uniq.length !== 5) return false;
+    // 普通顺子：最大 - 最小 = 4
+    if (uniq[4] - uniq[0] === 4) return true;
+    // A-2-3-4-5 低顺：序号为 [2,3,4,5,14]
+    if (uniq[0] === 2 && uniq[1] === 3 && uniq[2] === 4 && uniq[3] === 5 && uniq[4] === 14) return true;
     return false;
   })();
 
-  const isRoyal = isFlush && isStraight && values.includes(11) && values.includes(10);
+  // 皇家同花顺：同花顺且含 A（RANK_ORDER A=14）和 K（13）
+  const isRoyal = isFlush && isStraight && rankNums.includes(14) && rankNums.includes(13);
 
-  if (cards.length === 5 && isRoyal)     return HAND_RANKS[0]; // 皇家同花顺
-  if (cards.length === 5 && isFlush && isStraight) return HAND_RANKS[1]; // 同花顺
-  if (counts[0] === 4)                   return HAND_RANKS[2]; // 四条
-  if (counts[0] === 3 && counts[1] === 2)return HAND_RANKS[3]; // 葫芦
-  if (cards.length === 5 && isFlush)     return HAND_RANKS[4]; // 同花
-  if (cards.length === 5 && isStraight)  return HAND_RANKS[5]; // 顺子
-  if (counts[0] === 3)                   return HAND_RANKS[6]; // 三条
-  if (counts[0] === 2 && counts[1] === 2)return HAND_RANKS[7]; // 两对
-  if (counts[0] === 2)                   return HAND_RANKS[8]; // 对子
+  if (cards.length === 5 && isRoyal)                  return HAND_RANKS[0]; // 皇家同花顺
+  if (cards.length === 5 && isFlush && isStraight)    return HAND_RANKS[1]; // 同花顺
+  if (counts[0] === 4)                                return HAND_RANKS[2]; // 四条
+  if (counts[0] === 3 && counts[1] === 2)             return HAND_RANKS[3]; // 葫芦
+  if (cards.length === 5 && isFlush)                  return HAND_RANKS[4]; // 同花
+  if (cards.length === 5 && isStraight)               return HAND_RANKS[5]; // 顺子
+  if (counts[0] === 3)                                return HAND_RANKS[6]; // 三条
+  if (counts[0] === 2 && counts[1] === 2)             return HAND_RANKS[7]; // 两对
+  if (counts[0] === 2)                                return HAND_RANKS[8]; // 对子
   return HAND_RANKS[9]; // 高牌
 }
 
-function calcScore(cards) {
+// ─────────────────────────────────────────────
+// 计分（V1.2.0：含 Joker 结算）
+// ─────────────────────────────────────────────
+function calcScore(cards, jokerSlots) {
   const hand = detectHand(cards);
-  if (!hand) return 0;
-  const pointSum = cards.reduce((s, c) => s + c.value, 0);
-  return (hand.base + pointSum) * hand.mult;
+  if (!hand) return { score: 0, triggered: [] };
+
+  const cardChips = cards.reduce((s, c) => s + RANK_VALUE[c.rank], 0);
+  const baseChips = hand.base + cardChips;
+  let mult = hand.mult;
+
+  const triggered = []; // 记录哪些槽位触发了，以及 bonus 值
+
+  (jokerSlots || []).forEach((joker, idx) => {
+    if (!joker) return;
+    const ctx = { mult, cards, handType: hand.name };
+    const result = joker.apply(ctx);
+    mult = result.mult;
+    triggered.push({ idx, triggered: result.triggered, bonus: result.bonus });
+  });
+
+  return { score: baseChips * mult, triggered, handName: hand.name };
 }
 
 // ─────────────────────────────────────────────
@@ -455,10 +1173,10 @@ function buildDeck() {
   const deck = [];
   for (const suit of suits) {
     for (const rank of ranks) {
-      deck.push({ suit, rank, value: RANK_VALUE[rank], id: `${suit}${rank}` });
+      deck.push({ suit, rank, id: `${suit}${rank}` });
     }
   }
-  // Fisher-Yates
+  // Fisher-Yates shuffle
   for (let i = deck.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]];
@@ -469,6 +1187,7 @@ function buildDeck() {
 // ─────────────────────────────────────────────
 // 游戏状态
 // ─────────────────────────────────────────────
+const LEVEL_TARGETS = [300, 800, 2000];
 let state = {};
 
 function initGame() {
@@ -478,13 +1197,35 @@ function initGame() {
     hand:         deck.splice(0, 8),
     selected:     [],
     score:        0,
-    target:       300,
     handsLeft:    4,
     discardsLeft: 3,
     gameStatus:   'playing',
+    // V1.2.0 新增
+    currentLevel: 1,
+    coins:        4,
+    jokerSlots:   [null, null, null],  // 最多 3 张
+    shopItems:    [],
+    // V1.2.1 新增：手牌排序模式，重开后重置为按点数
+    sortMode:     'rank',
   };
   render();
   hideModal();
+  hideShop();
+}
+
+// 进入下一关（Joker 和金币保留，其余重置；sortMode 沿用玩家上一关设置）
+function nextLevel() {
+  state.currentLevel += 1;
+  const deck = buildDeck();
+  state.deck        = deck;
+  state.hand        = deck.splice(0, 8);
+  state.selected    = [];
+  state.score       = 0;
+  state.handsLeft   = 4;
+  state.discardsLeft = 3;
+  state.gameStatus  = 'playing';
+  // sortMode 保留不重置，玩家在本局的选择延续到下一关
+  render();
 }
 
 // ─────────────────────────────────────────────
@@ -505,11 +1246,16 @@ function toggleSelect(cardId) {
 
 function playHand() {
   if (state.selected.length === 0 || state.handsLeft <= 0) return;
-  const pts = calcScore(state.selected);
-  state.score += pts;
+
+  const { score, triggered } = calcScore(state.selected, state.jokerSlots);
+  state.score += score;
   state.handsLeft -= 1;
 
-  // 从手牌移除出掉的牌
+  // 出牌后获得金币：$3 + 剩余出牌次数×$1
+  const coinEarned = 3 + state.handsLeft;
+  state.coins += coinEarned;
+
+  // 移除出掉的牌
   state.hand = state.hand.filter(c => !state.selected.find(s => s.id === c.id));
   state.selected = [];
 
@@ -517,9 +1263,13 @@ function playHand() {
   const needed = 8 - state.hand.length;
   state.hand.push(...state.deck.splice(0, needed));
 
-  showScoreToast(`+${pts}`);
-  checkGameOver();
+  // 先渲染（让 Joker 槽位元素存在），再播放触发动画
   render();
+  playJokerAnimations(triggered);
+
+  showScoreToast(`+${score}`);
+  checkGameOver();
+  // 如果触发了过关，render 会被 showModal 覆盖，但动画已开始，问题不大
 }
 
 function discardHand() {
@@ -533,13 +1283,61 @@ function discardHand() {
 }
 
 function checkGameOver() {
-  if (state.score >= state.target) {
-    state.gameStatus = 'win';
-    showModal('win');
+  const target = LEVEL_TARGETS[state.currentLevel - 1];
+  if (state.score >= target) {
+    if (state.currentLevel >= 3) {
+      // 第 3 关通关
+      state.gameStatus = 'allclear';
+      showModal('allclear');
+    } else {
+      // 过关，进商店
+      state.gameStatus = 'levelclear';
+      showModal('levelclear');
+    }
   } else if (state.handsLeft <= 0) {
     state.gameStatus = 'lose';
     showModal('lose');
   }
+}
+
+// ─────────────────────────────────────────────
+// Joker 触发动画
+// ─────────────────────────────────────────────
+function playJokerAnimations(triggered) {
+  const zone = document.getElementById('joker-zone');
+  triggered.forEach((t, i) => {
+    if (!t.triggered || t.bonus === 0) return;
+
+    // 找到对应槽位元素
+    const slotEl = zone.children[t.idx];
+    if (!slotEl) return;
+
+    // 找到 joker-card（可能是槽位本身或其子元素）
+    const cardEl = slotEl.querySelector('.joker-card') || slotEl;
+    if (cardEl.classList.contains('joker-card')) {
+      cardEl.classList.remove('joker--triggered');
+      // 强制 reflow 让动画重新触发
+      void cardEl.offsetWidth;
+      cardEl.classList.add('joker--triggered');
+      cardEl.addEventListener('animationend', () => {
+        cardEl.classList.remove('joker--triggered');
+      }, { once: true });
+    }
+
+    // 浮字 "+X Mult"
+    const floatEl = document.createElement('div');
+    floatEl.className = 'float-text';
+    floatEl.textContent = `+${t.bonus} Mult`;
+
+    // 定位在槽位卡片中央偏上
+    const rect = (cardEl.classList.contains('joker-card') ? cardEl : slotEl).getBoundingClientRect();
+    const zoneRect = zone.getBoundingClientRect();
+    floatEl.style.left = (rect.left - zoneRect.left + rect.width / 2 - 30 + i * 4) + 'px';
+    floatEl.style.top  = (rect.top - zoneRect.top + rect.height / 2 - 10) + 'px';
+
+    zone.appendChild(floatEl);
+    floatEl.addEventListener('animationend', () => floatEl.remove(), { once: true });
+  });
 }
 
 // ─────────────────────────────────────────────
@@ -549,11 +1347,11 @@ function isRed(suit) { return suit === '♥' || suit === '♦'; }
 
 function renderCard(card, isSelected, zone) {
   const div = document.createElement('div');
-  div.className = `poker-card ${isRed(card.suit) ? 'red-card' : 'black-card'}${isSelected ? ' card-selected' : ''}`;
+  div.className = `poker-card has-art ${isRed(card.suit) ? 'red-card' : 'black-card'}${isSelected ? ' card-selected' : ''}`;
   if (zone === 'play') div.style.cssText = 'width:88px;height:128px';
   div.innerHTML = `
+    <img class="card-art" src="liblib/cards/${card.rank}.png" alt="${card.rank}">
     <div class="corner tl"><span class="rank">${card.rank}</span><span class="suit">${card.suit}</span></div>
-    <div class="center-suit">${card.suit}</div>
     <div class="corner br"><span class="rank">${card.rank}</span><span class="suit">${card.suit}</span></div>
   `;
   if (zone === 'hand') {
@@ -562,17 +1360,69 @@ function renderCard(card, isSelected, zone) {
   return div;
 }
 
+// 渲染一张 Joker 卡片（槽位版 76×110px）
+function renderJokerCard(joker) {
+  const div = document.createElement('div');
+  div.className = 'joker-card has-art';
+  div.dataset.jokerId = joker.id;
+  div.innerHTML = `
+    <img class="joker-art" src="liblib/jokers/joker_${joker.id}.png" alt="${joker.name}">
+    <div class="joker-stripe"></div>
+    <div class="joker-label">${joker.name}</div>
+  `;
+  div.title = joker.desc;
+  return div;
+}
+
+// 渲染 Joker 槽位区
+function renderJokerZone() {
+  const zone = document.getElementById('joker-zone');
+  zone.innerHTML = '';
+  state.jokerSlots.forEach((joker, idx) => {
+    const slot = document.createElement('div');
+    slot.className = 'joker-slot' + (joker ? ' filled' : '');
+    if (joker) {
+      slot.style.border = 'none';
+      slot.style.background = 'transparent';
+      slot.appendChild(renderJokerCard(joker));
+    } else {
+      slot.innerHTML = `<span class="slot-plus">+</span><span class="slot-label">空槽</span>`;
+    }
+    zone.appendChild(slot);
+  });
+}
+
 function render() {
-  // HUD
+  const target = LEVEL_TARGETS[state.currentLevel - 1];
+
+  // HUD 行1
+  document.getElementById('hud-level').textContent =
+    `第 ${state.currentLevel} 关 / 共 3 关 · 目标 ${target} 分`;
+  document.getElementById('hud-coins').textContent = state.coins;
+
+  // HUD 行2
+  document.getElementById('hud-target').textContent   = target;
   document.getElementById('hud-score').textContent    = state.score;
   document.getElementById('hud-hands').textContent    = state.handsLeft;
   document.getElementById('hud-discards').textContent = state.discardsLeft;
   document.getElementById('hand-count').textContent   = state.hand.length;
 
-  // 手牌
+  // Joker 槽位区
+  renderJokerZone();
+
+  // 手牌（排序后渲染；state.hand 原数组不变，确保 state.selected 引用一致）
   const handEl = document.getElementById('hand-cards');
   handEl.innerHTML = '';
-  state.hand.forEach(card => {
+  // 更新排序按钮激活状态
+  const btnRank = document.getElementById('btn-sort-rank');
+  const btnSuit = document.getElementById('btn-sort-suit');
+  if (btnRank && btnSuit) {
+    btnRank.classList.toggle('sort-btn-active', state.sortMode === 'rank');
+    btnRank.classList.toggle('sort-btn-inactive', state.sortMode !== 'rank');
+    btnSuit.classList.toggle('sort-btn-active', state.sortMode === 'suit');
+    btnSuit.classList.toggle('sort-btn-inactive', state.sortMode !== 'suit');
+  }
+  sortHand(state.hand, state.sortMode).forEach(card => {
     const selected = !!state.selected.find(s => s.id === card.id);
     handEl.appendChild(renderCard(card, selected, 'hand'));
   });
@@ -589,12 +1439,11 @@ function render() {
     playEl.appendChild(ph);
   }
 
-  // 牌型提示
+  // 牌型提示（带 Joker 预算）
   const badge = document.getElementById('hand-type-badge');
   if (state.selected.length > 0) {
-    const hand = detectHand(state.selected);
-    const pts  = calcScore(state.selected);
-    badge.textContent = hand ? `${hand.name}  ·  +${pts}` : '—';
+    const { score, handName } = calcScore(state.selected, state.jokerSlots);
+    badge.textContent = handName ? `${handName}  ·  +${score}` : '—';
     badge.className   = 'hand-type-badge';
   } else {
     badge.textContent = '请选 1–5 张牌';
@@ -602,8 +1451,8 @@ function render() {
   }
 
   // 按钮状态
-  const hasSelected  = state.selected.length > 0;
-  const playing      = state.gameStatus === 'playing';
+  const hasSelected = state.selected.length > 0;
+  const playing     = state.gameStatus === 'playing';
   document.getElementById('btn-play').disabled    = !hasSelected || state.handsLeft <= 0 || !playing;
   document.getElementById('btn-discard').disabled = !hasSelected || state.discardsLeft <= 0 || !playing;
 }
@@ -612,29 +1461,198 @@ function render() {
 // 弹窗
 // ─────────────────────────────────────────────
 function showModal(type) {
-  const overlay  = document.getElementById('modal');
-  const box      = document.getElementById('modal-box');
-  const title    = document.getElementById('modal-title');
-  const scoreEl  = document.getElementById('modal-score');
-  const body     = document.getElementById('modal-body');
+  const overlay   = document.getElementById('modal');
+  const box       = document.getElementById('modal-box');
+  const title     = document.getElementById('modal-title');
+  const scoreEl   = document.getElementById('modal-score');
+  const coinsEl   = document.getElementById('modal-coins');
+  const body      = document.getElementById('modal-body');
+  const actionBtn = document.getElementById('btn-modal-action');
 
-  box.className  = `modal-box ${type}`;
   overlay.classList.remove('hidden');
+  coinsEl.classList.add('hidden');
 
-  if (type === 'win') {
-    title.textContent = '胜利！';
+  if (type === 'levelclear') {
+    box.className = 'modal-box win';
+    title.textContent = `第 ${state.currentLevel} 关通过！`;
     scoreEl.textContent = state.score;
-    body.textContent = `恭喜！用 ${4 - state.handsLeft} 次出牌达成目标`;
+    body.textContent = '';
+    actionBtn.textContent = '进入商店 →';
+    actionBtn.className = 'btn btn-play';
+    actionBtn.onclick = () => {
+      hideModal();
+      openShop();
+    };
+  } else if (type === 'allclear') {
+    box.className = 'modal-box all-clear';
+    title.textContent = '恭喜通关！';
+    scoreEl.textContent = state.score;
+    coinsEl.textContent = `金币剩余 $ ${state.coins}`;
+    coinsEl.classList.remove('hidden');
+    body.textContent = '你通关了全部 3 关！';
+    actionBtn.textContent = '重新开始';
+    actionBtn.className = 'btn btn-play';
+    actionBtn.onclick = initGame;
   } else {
-    title.textContent = '游戏结束';
+    // lose
+    box.className = 'modal-box lose';
+    title.textContent = '游戏失败！';
     scoreEl.textContent = state.score;
-    body.textContent = `出牌次数耗尽，差 ${state.target - state.score} 分`;
+    const target = LEVEL_TARGETS[state.currentLevel - 1];
+    body.textContent = `还差 ${target - state.score} 分`;
+    actionBtn.textContent = '重新开始';
+    actionBtn.className = 'btn btn-discard';
+    actionBtn.onclick = initGame;
   }
 }
 
 function hideModal() {
   document.getElementById('modal').classList.add('hidden');
 }
+
+// ─────────────────────────────────────────────
+// 商店
+// ─────────────────────────────────────────────
+function openShop() {
+  // 随机抽 3 张 Joker（可重复）
+  state.shopItems = [0, 1, 2].map(() => JOKER_DB[Math.floor(Math.random() * JOKER_DB.length)]);
+  renderShop();
+  document.getElementById('shop-overlay').classList.remove('hidden');
+}
+
+function hideShop() {
+  document.getElementById('shop-overlay').classList.add('hidden');
+}
+
+function renderShop() {
+  document.getElementById('shop-subtitle').textContent =
+    `第 ${state.currentLevel} 关已通过！选购 Joker 强化牌组`;
+  document.getElementById('shop-coins').textContent = state.coins;
+
+  // 商品区
+  const itemsEl = document.getElementById('shop-items');
+  // 保留 toast，清掉旧卡片
+  const toast = document.getElementById('shop-toast');
+  itemsEl.innerHTML = '';
+  itemsEl.appendChild(toast);
+
+  const slotsFull = state.jokerSlots.every(s => s !== null);
+
+  state.shopItems.forEach((joker, i) => {
+    const card = document.createElement('div');
+    card.className = 'shop-joker-card';
+    card.dataset.jokerId = joker.id;
+
+    const canAfford = state.coins >= joker.price;
+
+    card.innerHTML = `
+      <div class="joker-stripe shop-stripe"></div>
+      <img class="shop-joker-art" src="liblib/jokers/joker_${joker.id}.png" alt="${joker.name}">
+      <div class="shop-joker-body">
+        <div class="shop-joker-name">${joker.name}</div>
+        <div class="shop-joker-divider"></div>
+        <div class="shop-joker-desc">${joker.desc.replace(/\n/g, '<br>')}</div>
+        <div class="shop-joker-price">${joker.price}</div>
+        <button class="btn-buy" data-idx="${i}">购买</button>
+      </div>
+    `;
+
+    const btn = card.querySelector('.btn-buy');
+    if (slotsFull) {
+      btn.className = 'btn-buy slots-full';
+      btn.disabled = true;
+      btn.title = '槽位已满';
+    } else if (!canAfford) {
+      btn.className = 'btn-buy insufficient';
+      btn.disabled = true;
+      btn.title = '金币不足';
+    }
+
+    btn.addEventListener('click', () => buyJoker(i, card, btn));
+    itemsEl.appendChild(card);
+  });
+
+  // 底部槽位展示
+  renderShopFooterSlots();
+}
+
+function buyJoker(shopIdx, cardEl, btnEl) {
+  const joker = state.shopItems[shopIdx];
+  if (!joker) return;
+
+  const slotsFull = state.jokerSlots.every(s => s !== null);
+  if (slotsFull) { showShopToast('Joker 槽位已满！'); return; }
+  if (state.coins < joker.price) { showShopToast('金币不足！'); return; }
+
+  // 扣金币，装入最左侧空槽
+  state.coins -= joker.price;
+  const emptyIdx = state.jokerSlots.findIndex(s => s === null);
+  state.jokerSlots[emptyIdx] = joker;
+
+  // 更新金币显示
+  document.getElementById('shop-coins').textContent = state.coins;
+  document.getElementById('hud-coins').textContent = state.coins;
+
+  // 购买按钮变为已购状态
+  btnEl.className = 'btn-buy purchased';
+  btnEl.disabled = true;
+  btnEl.textContent = '已购买';
+
+  // 如果槽位满了，禁用所有剩余购买按钮
+  const nowFull = state.jokerSlots.every(s => s !== null);
+  if (nowFull) {
+    document.querySelectorAll('.btn-buy:not(.purchased)').forEach(b => {
+      b.className = 'btn-buy slots-full';
+      b.disabled = true;
+    });
+  }
+
+  // 更新底部槽位预览
+  renderShopFooterSlots();
+}
+
+function renderShopFooterSlots() {
+  const el = document.getElementById('shop-footer-slots');
+  el.innerHTML = '';
+  el.style.display = 'flex';
+  el.style.gap = '8px';
+
+  state.jokerSlots.forEach(joker => {
+    if (joker) {
+      const card = document.createElement('div');
+      card.className = 'mini-joker-card';
+      card.dataset.jokerId = joker.id;
+      card.className = 'mini-joker-card has-art';
+      card.innerHTML = `
+        <img class="mini-joker-art" src="liblib/jokers/joker_${joker.id}.png" alt="${joker.name}">
+        <div class="mini-joker-stripe"></div>
+        <div class="mini-joker-label">${joker.name}</div>
+      `;
+      el.appendChild(card);
+    } else {
+      const empty = document.createElement('div');
+      empty.className = 'mini-slot-empty';
+      empty.textContent = '+';
+      el.appendChild(empty);
+    }
+  });
+}
+
+let shopToastTimer = null;
+function showShopToast(msg) {
+  const el = document.getElementById('shop-toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(shopToastTimer);
+  shopToastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// 继续下一关
+document.getElementById('btn-continue').addEventListener('click', () => {
+  hideShop();
+  nextLevel();
+  render();
+});
 
 // ─────────────────────────────────────────────
 // 得分 Toast
@@ -649,12 +1667,12 @@ function showScoreToast(text) {
 }
 
 // ─────────────────────────────────────────────
-// 缩放适配
+// 缩放适配（容器 720px）
 // ─────────────────────────────────────────────
 function scaleGame() {
   const root   = document.getElementById('scale-root');
   const scaleX = window.innerWidth  / 1080;
-  const scaleY = window.innerHeight / 640;
+  const scaleY = window.innerHeight / 720;
   const scale  = Math.min(scaleX, scaleY);
   root.style.transform = `scale(${scale})`;
 }
@@ -667,7 +1685,16 @@ scaleGame();
 document.getElementById('btn-play').addEventListener('click', playHand);
 document.getElementById('btn-discard').addEventListener('click', discardHand);
 document.getElementById('btn-restart').addEventListener('click', initGame);
-document.getElementById('btn-modal-restart').addEventListener('click', initGame);
+
+// V1.2.1：排序切换按钮（不改 state.hand，只改 sortMode 再 render）
+document.getElementById('btn-sort-rank').addEventListener('click', () => {
+  state.sortMode = 'rank';
+  render();
+});
+document.getElementById('btn-sort-suit').addEventListener('click', () => {
+  state.sortMode = 'suit';
+  render();
+});
 
 // 启动
 initGame();
